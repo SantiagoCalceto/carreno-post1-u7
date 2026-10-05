@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Tareas</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}" href="../../static/css/estilos.css">
+</head>
+<body>
+    <h1>Gestión de Tareas</h1>
+
+    <!-- Mensaje flash: sobrevive al redirect del patrón PRG (RedirectAttributes) -->
+    <p class="mensaje" th:if="${mensaje}" th:text="${mensaje}">Tarea creada</p>
+
+    <div class="barra">
+        <a th:href="@{/tareas/nueva}" class="btn btn-new">+ Nueva Tarea</a>
+
+        <!-- Filtros vía @RequestParam: al cambiar un select se reenvía el formulario GET -->
+        <form th:action="@{/tareas}" method="get" class="filtros">
+            <select name="prioridad" onchange="this.form.submit()">
+                <option value="">Todas las prioridades</option>
+                <option th:each="p : ${prioridades}" th:value="${p}" th:text="${p}"
+                        th:selected="${p == prioridadSeleccionada}">ALTA</option>
+            </select>
+            <select name="completada" onchange="this.form.submit()">
+                <option value="">Todos los estados</option>
+                <option value="false" th:selected="${completadaSeleccionada != null and !completadaSeleccionada}">Pendientes</option>
+                <option value="true" th:selected="${completadaSeleccionada != null and completadaSeleccionada}">Completadas</option>
+            </select>
+            <noscript><button type="submit">Filtrar</button></noscript>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr><th>ID</th><th>Título</th><th>Prioridad</th><th>Fecha límite</th><th>Estado</th><th>Acciones</th></tr>
+        </thead>
+        <tbody>
+            <!-- th:text escapa HTML por defecto: el título lo escribe el usuario -->
+            <tr th:each="t : ${tareas}" th:classappend="${t.completada} ? 'completada' : ''">
+                <td th:text="${t.id}">1</td>
+                <td class="titulo" th:text="${t.titulo}" th:title="${t.descripcion}">Tarea de ejemplo</td>
+                <td th:text="${t.prioridad}">ALTA</td>
+                <td th:text="${#temporals.format(t.fechaLimite, 'dd/MM/yyyy')}">01/01/2026</td>
+                <td th:text="${t.completada} ? 'Completada' : 'Pendiente'">Pendiente</td>
+                <td>
+                    <a th:href="@{/tareas/{id}/editar(id=${t.id})}" class="btn btn-edit">Editar</a>
+                    <form th:if="${!t.completada}" class="inline" method="post"
+                          th:action="@{/tareas/{id}/completar(id=${t.id})}">
+                        <button type="submit" class="btn btn-ok">Completar</button>
+                    </form>
+                    <form class="inline" method="post" th:action="@{/tareas/{id}/eliminar(id=${t.id})}"
+                          onsubmit="return confirm('¿Eliminar esta tarea?')">
+                        <button type="submit" class="btn btn-del">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(tareas)}">
+                <td colspan="6" class="vacio">No hay tareas que coincidan con el filtro.</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

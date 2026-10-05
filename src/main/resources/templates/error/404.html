@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tarea no encontrada</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+    <!-- Spring Boot usa templates/error/404.html automáticamente para los 404 de la vista -->
+    <h1>No encontrado (404)</h1>
+    <p>La tarea o la página solicitada no existe.</p>
+    <a th:href="@{/tareas}" class="btn btn-new">Volver a la lista</a>
+</body>
+</html>

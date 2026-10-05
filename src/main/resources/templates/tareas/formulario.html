@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${accion} + ' Tarea'">Tarea</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}" href="../../static/css/estilos.css">
+</head>
+<body>
+    <h1 th:text="${accion} + ' Tarea'">Crear Tarea</h1>
+
+    <!-- th:object + *{...}: cada campo se enlaza a la Tarea del modelo; tras un
+         error de validación se repuebla solo y th:errors muestra el mensaje -->
+    <form th:action="@{/tareas/guardar}" th:object="${tarea}" method="post" class="formulario">
+        <!-- Ocultos: id (necesario al editar) y completada (editar no debe
+             "des-completar" una tarea que ya estaba completada) -->
+        <input type="hidden" th:field="*{id}">
+        <input type="hidden" th:field="*{completada}">
+
+        <label for="titulo">Título:</label>
+        <input type="text" th:field="*{titulo}" id="titulo" th:errorclass="campo-error">
+        <span class="error" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}">Error</span>
+
+        <label for="descripcion">Descripción:</label>
+        <textarea th:field="*{descripcion}" id="descripcion" rows="3" th:errorclass="campo-error"></textarea>
+        <span class="error" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}">Error</span>
+
+        <label for="prioridad">Prioridad:</label>
+        <select th:field="*{prioridad}" id="prioridad" th:errorclass="campo-error">
+            <option value="">-- Seleccione --</option>
+            <option th:each="p : ${prioridades}" th:value="${p}" th:text="${p}">MEDIA</option>
+        </select>
+        <span class="error" th:if="${#fields.hasErrors('prioridad')}" th:errors="*{prioridad}">Error</span>
+
+        <label for="fechaLimite">Fecha límite:</label>
+        <input type="date" th:field="*{fechaLimite}" id="fechaLimite" th:errorclass="campo-error">
+        <span class="error" th:if="${#fields.hasErrors('fechaLimite')}" th:errors="*{fechaLimite}">Error</span>
+
+        <div class="acciones-form">
+            <button type="submit" class="btn btn-save" th:text="${accion} + ' Tarea'">Guardar</button>
+            <a th:href="@{/tareas}" class="btn btn-cancel">Cancelar</a>
+        </div>
+    </form>
+</body>
+</html>
