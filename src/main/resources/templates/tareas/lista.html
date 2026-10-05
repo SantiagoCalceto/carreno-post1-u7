@@ -28,6 +28,10 @@
             </select>
             <noscript><button type="submit">Filtrar</button></noscript>
         </form>
+
+        <!-- Parte 2: el mismo filtro, servido como JSON por TareaApiController -->
+        <a th:href="@{/api/tareas(prioridad=${prioridadSeleccionada},completada=${completadaSeleccionada})}"
+           target="_blank">Ver como JSON (API)</a>
     </div>
 
     <table>
